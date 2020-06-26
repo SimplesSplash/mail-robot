@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:gui="http://schemas.haulmont.com/cuba/spring/cuba-gui.xsd">
+
+    <!-- Annotation-based beans -->
+    <context:component-scan base-package="com.groupstp.mailreader"/>
+    
+    <gui:screens base-packages="com.groupstp.mailreader.web"/>
+    <bean id="mailreader_proxyCreator" class="com.haulmont.cuba.web.sys.remoting.WebRemoteProxyBeanCreator">
+        <property name="serverSelector" ref="cuba_ServerSelector"/>
+        <property name="remoteServices">
+            <map>
+                <entry key="mailreader_ImapService" value="com.groupstp.mailreader.service.ImapService"/>
+                <entry key="mailreader_ReceiveEmailsService"
+                       value="com.groupstp.mailreader.service.ReceiveEmailsService"/>
+                <entry key="mailreader_ConnectionService" value="com.groupstp.mailreader.service.ConnectionService"/>
+            </map>
+        </property>
+    </bean>
+
+</beans>

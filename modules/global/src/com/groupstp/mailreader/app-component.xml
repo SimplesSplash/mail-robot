@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<app-component xmlns="http://schemas.haulmont.com/cuba/app-component.xsd"
+               dependsOn="com.haulmont.cuba">
+
+    <module name="global" blocks="*">
+        <artifact name="mailRobot-global" appJar="true"/>
+
+        <property name="cuba.persistenceConfig" value="+com/groupstp/mailreader/persistence.xml"/>
+        <property name="cuba.metadataConfig" value="+com/groupstp/mailreader/metadata.xml"/>
+        <property name="cuba.viewsConfig" value="+com/groupstp/mailreader/views.xml"/>
+    </module>
+    <module name="core" dependsOn="global" blocks="core">
+        <artifact name="mailRobot-core" appJar="true"/>
+        <artifact name="mailRobot-core" classifier="db" ext="zip" configuration="dbscripts"/>
+
+        <property name="cuba.springContextConfig" value="+com/groupstp/mailreader/spring.xml"/>
+        <property name="cuba.mainMessagePack" value="+com.groupstp.mailreader.core"/>
+    </module>
+    <module name="web" dependsOn="global" blocks="web">
+        <artifact name="mailRobot-web" appJar="true"/>
+        <artifact name="mailRobot-web" classifier="web" ext="zip" configuration="webcontent"/>
+
+        <property name="cuba.springContextConfig" value="+com/groupstp/mailreader/web-spring.xml"/>
+        <property name="cuba.dispatcherSpringContextConfig" value="+com/groupstp/mailreader/web-dispatcher-spring.xml"/>
+        <property name="cuba.windowConfig" value="+com/groupstp/mailreader/web-screens.xml"/>
+        <property name="cuba.menuConfig" value="+com/groupstp/mailreader/web-menu.xml"/>
+        <property name="cuba.permissionConfig" value="+com/groupstp/mailreader/web-permissions.xml"/>
+        <property name="cuba.mainMessagePack" value="+com.groupstp.mailreader.web"/>
+    </module>
+</app-component>
