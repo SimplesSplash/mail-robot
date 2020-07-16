@@ -16,10 +16,7 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service(ReceiveEmailsService.NAME)
 public class EmailsServiceBean implements ReceiveEmailsService {
@@ -40,23 +37,23 @@ public class EmailsServiceBean implements ReceiveEmailsService {
         if (allConnectionData.isEmpty())
             return null;
 
-        List<Message> unreadMessages = imapService.getUnreadMessages(allConnectionData);
+        Map<String, Message> unreadMessages = imapService.getUnreadMessages(allConnectionData);
 
             List<ResultMessage> resultMessages = new ArrayList<>();
 
-            for (Message message : unreadMessages) {
-                String subject = message.getSubject();
-                Address[] recipients = message.getRecipients(Message.RecipientType.TO);
-                MimeMultipart mimeMultipart = (MimeMultipart) message.getContent();
+            for (Map.Entry<String, Message> messageSet : unreadMessages.entrySet()) {
+                String subject = messageSet.getValue().getSubject();
+                String recipient = messageSet.getKey();
+                MimeMultipart mimeMultipart = (MimeMultipart) messageSet.getValue().getContent();
                 StringBuilder result = new StringBuilder();
                 List<FileDescriptor> fileDescriptors = new ArrayList<>();
                 parseMultiparted(mimeMultipart,result,fileDescriptors);
                 ResultMessage resultMessage = new ResultMessage()
-                        .setRecipient(recipients[0].toString())
+                        .setRecipient(recipient)
                         .setSubject(subject)
                         .setAttachments(fileDescriptors)
                         .setTextContent(result.toString())
-                        .setFrom(message.getFrom()[0].toString());
+                        .setFrom(messageSet.getValue().getFrom()[0].toString());
                 resultMessages.add(resultMessage);
             }
             imapService.closeConnection(allConnectionData);

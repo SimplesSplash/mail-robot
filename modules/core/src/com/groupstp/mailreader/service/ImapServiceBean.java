@@ -32,14 +32,14 @@ public class ImapServiceBean implements ImapService {
      * @return список непрочитанных писем
      * @throws MessagingException ошибка работы с почтовым сервером
      */
-    public List<Message> getUnreadMessages(List<ConnectionData> connections) {
-        List<Message> result = new ArrayList<>();
+    public Map<String, Message> getUnreadMessages(List<ConnectionData> connections) {
+        Map<String, Message> result = new HashMap<>();
         connections.forEach(connectionData -> {
             try {
                 ConnectionInfo info = validateConnection(connectionData);
                 Message[] unreadMessages = info.getInbox().search(new FlagTerm(new Flags(Flags.Flag.SEEN), false));
                 for (Message message : unreadMessages) {
-                    result.add(message);
+                    result.put(connectionData.getUsername(),message);
                     message.setFlag(Flags.Flag.SEEN, true);
                 }
             } catch (MessagingException e) {
