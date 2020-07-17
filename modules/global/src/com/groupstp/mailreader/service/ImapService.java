@@ -12,7 +12,7 @@ public interface ImapService {
 
     String NAME = "mailreader_ImapService";
 
-    Map<String, Message> getUnreadMessages(List<ConnectionData> connectionDataList) throws MessagingException;
+    Map<String, List<Message>> getUnreadMessages(List<ConnectionData> connectionDataList) throws MessagingException;
     void closeConnection(List<ConnectionData> connectionDataList) throws MessagingException;
 
 }
