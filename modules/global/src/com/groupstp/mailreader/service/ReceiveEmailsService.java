@@ -1,6 +1,7 @@
 package com.groupstp.mailreader.service;
 
-import com.groupstp.mailreader.entity.ResultMessage;
+import com.groupstp.mailreader.entity.dto.MessageDto;
+import com.groupstp.mailreader.entity.dto.ThreadDto;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
@@ -10,6 +11,6 @@ public interface
 ReceiveEmailsService {
     String NAME = "mailreader_ReceiveEmailsService";
 
-    List<ResultMessage> receive() throws MessagingException, IOException;
+    List<MessageDto> receive() throws MessagingException, IOException;
 
 }

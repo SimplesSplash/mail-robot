@@ -1,0 +1,1 @@
+alter table MAILREADER_CONNECTION_DATA add column CREDENTIALS text ;

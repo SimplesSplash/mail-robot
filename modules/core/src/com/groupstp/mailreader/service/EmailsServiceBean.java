@@ -1,11 +1,10 @@
 package com.groupstp.mailreader.service;
 
 import com.groupstp.mailreader.entity.ConnectionData;
-import com.groupstp.mailreader.entity.ResultMessage;
-import com.haulmont.cuba.core.app.EmailService;
+import com.groupstp.mailreader.entity.dto.MessageDto;
+import com.groupstp.mailreader.entity.dto.ThreadDto;
 import com.haulmont.cuba.core.app.FileStorageAPI;
 import com.haulmont.cuba.core.entity.FileDescriptor;
-import com.haulmont.cuba.core.global.EmailInfo;
 import com.haulmont.cuba.core.global.FileStorageException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -30,7 +29,7 @@ public class EmailsServiceBean implements ReceiveEmailsService {
 
 
     @Override
-    public List<ResultMessage> receive() throws MessagingException, IOException {
+    public List<MessageDto> receive() throws MessagingException, IOException {
 
         List<ConnectionData> allConnectionData = connectionService.getAllConnectionData();
 
@@ -39,7 +38,7 @@ public class EmailsServiceBean implements ReceiveEmailsService {
 
         Map<String, List<Message>> unreadMessages = imapService.getUnreadMessages(allConnectionData);
 
-            List<ResultMessage> resultMessages = new ArrayList<>();
+            List<MessageDto> messageDtos = new ArrayList<>();
 
             for (Map.Entry<String, List<Message>> messageSet : unreadMessages.entrySet()) {
                 for (Message message: messageSet.getValue()){
@@ -49,18 +48,18 @@ public class EmailsServiceBean implements ReceiveEmailsService {
                     StringBuilder result = new StringBuilder();
                     List<FileDescriptor> fileDescriptors = new ArrayList<>();
                     parseMultiparted(mimeMultipart,result,fileDescriptors);
-                    ResultMessage resultMessage = new ResultMessage()
+                    MessageDto messageDto = new MessageDto()
                             .setRecipient(recipient)
                             .setSubject(subject)
                             .setAttachments(fileDescriptors)
                             .setTextContent(result.toString())
                             .setFrom(message.getFrom()[0].toString());
-                    resultMessages.add(resultMessage);
+                    messageDtos.add(messageDto);
                 }
 
             }
             imapService.closeConnection(allConnectionData);
-            return resultMessages;
+            return messageDtos;
     }
 
 

@@ -1,4 +1,4 @@
-package com.groupstp.mailreader.entity;
+package com.groupstp.mailreader.entity.dto;
 
 import com.haulmont.chile.core.annotations.MetaClass;
 import com.haulmont.chile.core.annotations.MetaProperty;
@@ -9,7 +9,7 @@ import javax.validation.constraints.Email;
 import java.util.List;
 
 @MetaClass(name = "mailreader_ResultMessage")
-public class ResultMessage extends BaseUuidEntity {
+public class MessageDto extends BaseUuidEntity {
     private static final long serialVersionUID = 4795004548510941647L;
 
     @MetaProperty
@@ -32,7 +32,7 @@ public class ResultMessage extends BaseUuidEntity {
         return from;
     }
 
-    public ResultMessage setFrom(String from) {
+    public MessageDto setFrom(String from) {
         this.from = from;
         return this;
     }
@@ -41,7 +41,7 @@ public class ResultMessage extends BaseUuidEntity {
         return recipient;
     }
 
-    public ResultMessage setRecipient(String recipient) {
+    public MessageDto setRecipient(String recipient) {
         this.recipient = recipient;
         return this;
     }
@@ -50,7 +50,7 @@ public class ResultMessage extends BaseUuidEntity {
         return attachments;
     }
 
-    public ResultMessage setAttachments(List<FileDescriptor> attachments) {
+    public MessageDto setAttachments(List<FileDescriptor> attachments) {
         this.attachments = attachments;
         return this;
     }
@@ -59,7 +59,7 @@ public class ResultMessage extends BaseUuidEntity {
         return textContent;
     }
 
-    public ResultMessage setTextContent(String textContent) {
+    public MessageDto setTextContent(String textContent) {
         this.textContent = textContent;
         return this;
     }
@@ -68,7 +68,7 @@ public class ResultMessage extends BaseUuidEntity {
         return subject;
     }
 
-    public ResultMessage setSubject(String subject) {
+    public MessageDto setSubject(String subject) {
         this.subject = subject;
         return this;
     }

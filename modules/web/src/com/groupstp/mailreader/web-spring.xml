@@ -15,6 +15,7 @@
                 <entry key="mailreader_ReceiveEmailsService"
                        value="com.groupstp.mailreader.service.ReceiveEmailsService"/>
                 <entry key="mailreader_ConnectionService" value="com.groupstp.mailreader.service.ConnectionService"/>
+                <entry key="mailreader_GmailService" value="com.groupstp.mailreader.service.GmailService"/>
             </map>
         </property>
     </bean>

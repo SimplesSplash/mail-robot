@@ -1,1 +1,1 @@
-${resultMessage.textContent}
+${messageDto.textContent}

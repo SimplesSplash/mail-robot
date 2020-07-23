@@ -2,7 +2,7 @@
 <metadata xmlns="http://schemas.haulmont.com/cuba/metadata.xsd">
 
     <metadata-model root-package="com.groupstp.mailreader" namespace="mailreader">
-        <class>com.groupstp.mailreader.entity.ResultMessage</class>
+        <class>com.groupstp.mailreader.entity.dto.MessageDto</class>
     </metadata-model>
 
 </metadata>
