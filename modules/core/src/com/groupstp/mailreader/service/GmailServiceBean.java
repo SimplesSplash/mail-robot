@@ -1,9 +1,6 @@
 package com.groupstp.mailreader.service;
 
 import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
-import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
@@ -11,33 +8,38 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.Base64;
-import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.GmailScopes;
-import com.google.api.services.gmail.model.*;
 import com.google.api.services.gmail.model.Thread;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.api.services.gmail.model.*;
 import com.groupstp.mailreader.entity.ConnectionData;
 import com.groupstp.mailreader.entity.dto.MessageDto;
 import com.groupstp.mailreader.entity.dto.ThreadDto;
 import com.haulmont.cuba.core.app.FileStorageAPI;
 import com.haulmont.cuba.core.entity.FileDescriptor;
 import com.haulmont.cuba.core.global.FileStorageException;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.io.*;
+import java.io.IOException;
+import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 @Service(GmailService.NAME)
 public class GmailServiceBean implements GmailService {
+    private static final Logger log = LoggerFactory.getLogger(GmailServiceBean.class);
+
+
     private static final String APPLICATION_NAME = "Scrumit";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-    private static final String TOKENS_DIRECTORY_PATH = "tokens";
 
     /**
      * Global instance of the scopes required by this quickstart.
@@ -56,18 +58,22 @@ public class GmailServiceBean implements GmailService {
      * @throws IOException If the credentials.json file cannot be found.
      */
     private  Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT, ConnectionData connectionData) throws IOException {
-
-        StringReader stringReader = new StringReader(connectionData.getCredentials());
-        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, stringReader);
-
+        if (StringUtils.isAnyBlank(connectionData.getCredentials(), connectionData.getRefreshToken())){
+            log.error("Некорректные данные подключения");
+            return null;
+        }
 //        Подключение без запроса у пользователя
 //                гайд:(https://stackoverflow.com/questions/19766912/how-do-i-authorise-an-app-web-or-installed-without-user-intervention)
-        GoogleCredential credential = new GoogleCredential.Builder()
-                .setTransport(HTTP_TRANSPORT)
-                .setJsonFactory(JSON_FACTORY)
-                .setClientSecrets(clientSecrets)
-                .build();
-        credential.setRefreshToken(connectionData.getRefreshToken());
+        GoogleCredential credential;
+        try( StringReader stringReader = new StringReader(connectionData.getCredentials())) {
+            GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, stringReader);
+            credential = new GoogleCredential.Builder()
+                    .setTransport(HTTP_TRANSPORT)
+                    .setJsonFactory(JSON_FACTORY)
+                    .setClientSecrets(clientSecrets)
+                    .build();
+            credential.setRefreshToken(connectionData.getRefreshToken());
+        }
         return  credential;
     }
 
