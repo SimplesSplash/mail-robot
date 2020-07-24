@@ -5,6 +5,7 @@ import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInsta
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -56,33 +57,42 @@ public class GmailServiceBean implements GmailService {
      */
     private  Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT, ConnectionData connectionData) throws IOException {
 
-        JsonParser jsonParser = new JsonParser();
-        JsonElement credentialsJson = jsonParser.parse(connectionData.getCredentials());
-        GoogleClientSecrets.Details details = new GoogleClientSecrets.Details();
-        JsonObject installed = credentialsJson.getAsJsonObject().get("installed").getAsJsonObject();
-        details.setClientId(installed.get("client_id").getAsString())
-                .setAuthUri(installed.get("auth_uri").getAsString())
-                .setTokenUri(installed.get("token_uri").getAsString())
-                .setClientSecret(installed.get("client_secret").getAsString())
-                .setRedirectUris(new ArrayList<>());
-                installed.get("redirect_uris").getAsJsonArray().forEach(jsonElement -> {
-                    details.getRedirectUris().add(jsonElement.getAsString());
-                });
-        GoogleClientSecrets clientSecrets = new GoogleClientSecrets();
-        clientSecrets.setInstalled(details);
+//        JsonParser jsonParser = new JsonParser();
+//        JsonElement credentialsJson = jsonParser.parse(connectionData.getCredentials());
+//        GoogleClientSecrets.Details details = new GoogleClientSecrets.Details();
+//        JsonObject installed = credentialsJson.getAsJsonObject().get("installed").getAsJsonObject();
+        StringReader stringReader = new StringReader(connectionData.getCredentials());
+        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, stringReader);
+//        details.setClientId(installed.get("client_id").getAsString())
+//                .setAuthUri(installed.get("auth_uri").getAsString())
+//                .setTokenUri(installed.get("token_uri").getAsString())
+//                .setClientSecret(installed.get("client_secret").getAsString())
+//                .setRedirectUris(new ArrayList<>());
+//                installed.get("redirect_uris").getAsJsonArray().forEach(jsonElement -> {
+//                    details.getRedirectUris().add(jsonElement.getAsString());
+//                });
+//        GoogleClientSecrets clientSecrets = new GoogleClientSecrets();
+//        clientSecrets.setInstalled(details);
+        GoogleCredential credential = new GoogleCredential.Builder()
+                .setTransport(HTTP_TRANSPORT)
+                .setJsonFactory(JSON_FACTORY)
+                .setClientSecrets(clientSecrets)
+                .build();
+        credential.setRefreshToken("1//0fldObepx7uJNCgYIARAAGA8SNwF-L9IrBi9d-hwrgmZtLg5xzffRqwN3q9LXrFgduwR59ofmmd2NN_gXLvfU0Gb9tEx2-8LWtlY");
         // Build flow and trigger user authorization request.
-        GoogleAuthorizationCodeFlow flow = null;
-        try {
-            flow = new GoogleAuthorizationCodeFlow.Builder(
-                    HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-                    .setDataStoreFactory(new FileDataStoreFactory(new File(TOKENS_DIRECTORY_PATH)))
-                    .setAccessType("offline")
-                    .build();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
-        return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+//        GoogleAuthorizationCodeFlow flow = null;
+//        try {
+//            flow = new GoogleAuthorizationCodeFlow.Builder(
+//                    HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
+//                    .setDataStoreFactory(new FileDataStoreFactory(new File(TOKENS_DIRECTORY_PATH)))
+//                    .setAccessType("offline")
+//                    .build();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+//        return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+        return  credential;
     }
 
     public List<ThreadDto> getThreads(ConnectionData connectionData) throws IOException, GeneralSecurityException {
