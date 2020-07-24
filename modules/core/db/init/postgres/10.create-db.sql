@@ -14,6 +14,8 @@ create table MAILREADER_CONNECTION_DATA (
     USERNAME varchar(255),
     PASSWORD varchar(255),
     PROTO varchar(255),
+    CREDENTIALS text,
+    REFRESH_TOKEN varchar(255),
     --
     primary key (ID)
 )^

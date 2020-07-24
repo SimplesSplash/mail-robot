@@ -31,6 +31,17 @@ public class ConnectionData extends StandardEntity {
     @Column(name = "CREDENTIALS")
     protected String credentials;
 
+    @Column(name = "REFRESH_TOKEN")
+    protected String refreshToken;
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
     public String getCredentials() {
         return credentials;
     }

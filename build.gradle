@@ -57,17 +57,6 @@ configure([globalModule, coreModule, webModule]) {
         }
 
     }
-//
-//    sourceSets {
-//        main{
-//            java{
-//                srcDir('src')
-//            }
-//            resources{
-//                srcDirs 'src/com/groupstp/mailreader/resources'
-//            }
-//        }
-//    }
 
     task sourceJar(type: Jar) {
         from file('src')

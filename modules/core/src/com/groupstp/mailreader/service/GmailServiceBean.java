@@ -57,41 +57,17 @@ public class GmailServiceBean implements GmailService {
      */
     private  Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT, ConnectionData connectionData) throws IOException {
 
-//        JsonParser jsonParser = new JsonParser();
-//        JsonElement credentialsJson = jsonParser.parse(connectionData.getCredentials());
-//        GoogleClientSecrets.Details details = new GoogleClientSecrets.Details();
-//        JsonObject installed = credentialsJson.getAsJsonObject().get("installed").getAsJsonObject();
         StringReader stringReader = new StringReader(connectionData.getCredentials());
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, stringReader);
-//        details.setClientId(installed.get("client_id").getAsString())
-//                .setAuthUri(installed.get("auth_uri").getAsString())
-//                .setTokenUri(installed.get("token_uri").getAsString())
-//                .setClientSecret(installed.get("client_secret").getAsString())
-//                .setRedirectUris(new ArrayList<>());
-//                installed.get("redirect_uris").getAsJsonArray().forEach(jsonElement -> {
-//                    details.getRedirectUris().add(jsonElement.getAsString());
-//                });
-//        GoogleClientSecrets clientSecrets = new GoogleClientSecrets();
-//        clientSecrets.setInstalled(details);
+
+//        Подключение без запроса у пользователя
+//                гайд:(https://stackoverflow.com/questions/19766912/how-do-i-authorise-an-app-web-or-installed-without-user-intervention)
         GoogleCredential credential = new GoogleCredential.Builder()
                 .setTransport(HTTP_TRANSPORT)
                 .setJsonFactory(JSON_FACTORY)
                 .setClientSecrets(clientSecrets)
                 .build();
-        credential.setRefreshToken("1//0fldObepx7uJNCgYIARAAGA8SNwF-L9IrBi9d-hwrgmZtLg5xzffRqwN3q9LXrFgduwR59ofmmd2NN_gXLvfU0Gb9tEx2-8LWtlY");
-        // Build flow and trigger user authorization request.
-//        GoogleAuthorizationCodeFlow flow = null;
-//        try {
-//            flow = new GoogleAuthorizationCodeFlow.Builder(
-//                    HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-//                    .setDataStoreFactory(new FileDataStoreFactory(new File(TOKENS_DIRECTORY_PATH)))
-//                    .setAccessType("offline")
-//                    .build();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
-//        return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+        credential.setRefreshToken(connectionData.getRefreshToken());
         return  credential;
     }
 
