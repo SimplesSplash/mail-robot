@@ -52,6 +52,10 @@ configure([globalModule, coreModule, webModule]) {
         compile 'com.google.api-client:google-api-client:1.30.0'
         compile 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
         compile 'com.google.apis:google-api-services-gmail:v1-rev20200713-1.30.10'
+        compile ('com.google.guava:guava:29.0-jre'){
+            force = true
+        }
+
     }
 //
 //    sourceSets {
