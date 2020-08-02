@@ -6,6 +6,7 @@ import com.haulmont.cuba.core.entity.BaseUuidEntity;
 import com.haulmont.cuba.core.entity.FileDescriptor;
 
 import javax.validation.constraints.Email;
+import java.util.Date;
 import java.util.List;
 
 @MetaClass(name = "mailreader_ResultMessage")
@@ -14,6 +15,9 @@ public class MessageDto extends BaseUuidEntity {
 
     @MetaProperty
     protected String subject;
+
+    @MetaProperty
+    protected Date receiptTime;
 
     @Email
     @MetaProperty
@@ -27,6 +31,51 @@ public class MessageDto extends BaseUuidEntity {
 
     @MetaProperty
     protected String recipient;
+
+    @MetaProperty
+    protected String references;
+
+    @MetaProperty
+    protected String inReplyTo;
+
+    @MetaProperty
+    protected String messageExtId;
+
+    public String getMessageExtId() {
+        return messageExtId;
+    }
+
+    public MessageDto setMessageExtId(String messageExtId) {
+        this.messageExtId = messageExtId;
+        return this;
+    }
+
+    public String getInReplyTo() {
+        return inReplyTo;
+    }
+
+    public MessageDto setInReplyTo(String inReplyTo) {
+        this.inReplyTo = inReplyTo;
+        return this;
+    }
+
+    public String getReferences() {
+        return references;
+    }
+
+    public MessageDto setReferences(String references) {
+        this.references = references;
+        return this;
+    }
+
+    public Date getReceiptTime() {
+        return receiptTime;
+    }
+
+    public MessageDto setReceiptTime(Date receiptTime) {
+        this.receiptTime = receiptTime;
+        return this;
+    }
 
     public String getFrom() {
         return from;
