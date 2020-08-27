@@ -103,7 +103,7 @@ public class GmailServiceBean implements GmailService {
                 boolean isThreadCreatedByMe = false;
                 Thread fullThread = service.users().threads().get("me", thread.getId()).execute();
                for (MessagePartHeader partHeader : fullThread.getMessages().get(0).getPayload().getHeaders()){
-                   if ("From".equals(partHeader.getName()) && connectionData.getUsername().equals(partHeader.getValue())){
+                   if ("From".equals(partHeader.getName()) && partHeader.getValue().contains(connectionData.getUsername())){
                        isThreadCreatedByMe = true;
                    }
                }
@@ -259,13 +259,20 @@ public class GmailServiceBean implements GmailService {
         }else {
             ParseMultiParted(service, message.getPayload().getParts(),message.getId(), user, stringBuilder, attachments);
         }
-        byte[] bodyBytes = Base64.decodeBase64(stringBuilder.toString());
-        String text = new String(bodyBytes, StandardCharsets.UTF_8);
-        int indexOfBeginOfForwardedDiv = text.indexOf("<div class=\"gmail_quote\">");
-        if (indexOfBeginOfForwardedDiv>0)
-            return text.substring(0,indexOfBeginOfForwardedDiv);
-        else
-            return text;
+
+        try{
+            byte[] bodyBytes = Base64.decodeBase64(stringBuilder.toString());
+            String text = new String(bodyBytes, StandardCharsets.UTF_8);
+            int indexOfBeginOfForwardedDiv = text.indexOf("<div class=\"gmail_quote\">");
+            if (indexOfBeginOfForwardedDiv>0)
+                return text.substring(0,indexOfBeginOfForwardedDiv);
+            else
+                return text;
+
+        }catch (Exception e){
+            log.error("unable parse message with  id: " + message.getId());
+            return "";
+        }
     }
 
     private void ParseMultiParted(Gmail service,
